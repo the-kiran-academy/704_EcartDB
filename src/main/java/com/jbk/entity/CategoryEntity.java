@@ -104,6 +104,13 @@ public class CategoryEntity {
 	public void setDeliveryCharge(float deliveryCharge) {
 		this.deliveryCharge = deliveryCharge;
 	}
+
+
+	@Override
+	public String toString() {
+		return "CategoryEntity [categoryId=" + categoryId + ", categoryName=" + categoryName + ", discription="
+				+ discription + ", discount=" + discount + ", gst=" + gst + ", deliveryCharge=" + deliveryCharge + "]";
+	}
 	
 	
 }

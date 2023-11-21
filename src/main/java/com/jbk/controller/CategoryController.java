@@ -1,5 +1,7 @@
 package com.jbk.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -59,11 +62,48 @@ public class CategoryController {
 		if(status==1) {
 			return new ResponseEntity<String>("Category Deleted", HttpStatus.MOVED_PERMANENTLY);
 		}else if(status==2) {
-			throw new ResourceAlreadyExistException("Category Not Exists With Id ="+categoryId);
+			throw new ResourceNotFoundException("Category Not Exists With Id ="+categoryId);
 		}else {
 			return new ResponseEntity<String>("Something Went Wrong", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 	}
+	
+	@PutMapping("/update-category")
+	public ResponseEntity<String> updateCategoryById(@RequestBody @Valid Category category){
+		
+		int status=service.updateCategory(category);
+		if(status==1) {
+			return new ResponseEntity<String>("Category Updated", HttpStatus.CREATED);
+		}else if(status==2) {
+			throw new ResourceNotFoundException("Category Not Exists With Id ="+category.getCategoryId());
+		}else {
+			return new ResponseEntity<String>("Something Went Wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+	}
+	
+	@GetMapping("/get-category-by-name/{name}")
+	public ResponseEntity<Object> getCategoryByName(@PathVariable String name){
+		
+		Category category = service.getCategoryByName(name);
+		
+		return new ResponseEntity<Object>(category,HttpStatus.OK);
+		
+	}
+	
+	@GetMapping("/get-all-category")
+	public ResponseEntity<Object> getAllCategory(){
+		
+		List<Category> list = service.getAllCategory();
+		
+		if(!list.isEmpty()) {
+			return new ResponseEntity<Object>(list,HttpStatus.OK);
+		}else {
+			return new ResponseEntity<Object>(HttpStatus.NO_CONTENT);
+		}
+	}
+	
+	
 
 }
